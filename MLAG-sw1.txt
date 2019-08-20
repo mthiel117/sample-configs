@@ -1,0 +1,47 @@
+
+
+hostname LEAF1
+!
+spanning-tree mode rapid-pvst
+!
+vlan 4094
+   name MLAG
+   trunk group MLAG-PEER
+!
+no spanning-tree vlan 4094
+!
+interface Ethernet47
+   channel-group 1000 mode active
+!
+interface Ethernet48
+   channel-group 1000 mode active
+!
+interface Port-Channel1000
+   description MLAG Peer-Link
+   switchport mode trunk
+   switchport trunk group MLAG-PEER
+!
+interface Vlan4094
+   description MLAG Peer Sync
+   no autostate
+   ip address 192.168.0.1/30
+!
+mlag configuration
+   domain-id ARISTA-AB
+   local-interface Vlan4094
+   peer-address 192.168.0.2
+   peer-link Port-Channel1000
+
+
+! SAMPLE MLAG FOR DUAL CONNECTED HOST Ethernet1
+
+interface Ethernet1
+   description HostA - mlag
+   switchport
+   channel-group 1 mode active
+!
+interface Port-Channel1
+   description HostA - mlag
+   switchport access vlan 32
+   mlag 1
+!
